@@ -1,2 +1,0 @@
-# Method
-Anjay mabar
