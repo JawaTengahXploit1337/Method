@@ -70,7 +70,7 @@ if (is_logged_in()) {
         <form method="POST" action="">
             <label for="password"></label>
             <input type="password" id="password" name="password">
-            <input type="submit" value="💔">
+            <input type="submit" value="$">
         </form>
     </body>
     </html>
