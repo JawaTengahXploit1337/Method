@@ -38,7 +38,7 @@ void connectToServer(const char *server_ip, int port) {
 }
 
 int main() {
-    const char *server_ip = "49.13.20.171";
+    const char *server_ip = "";
     int port = 4444;
 
     connectToServer(server_ip, port);
