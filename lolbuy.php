@@ -34,7 +34,7 @@ function is_logged_in()
 
 if (isset($_POST['pass'])) {
     $entered_password = $_POST['pass'];
-    $hashed_password = '$2y$10$XZ.gQZx8RX8n72PV19Fn7eC24vdku28vrr836p6fMEsOXa2aH.9nG'; 
+    $hashed_password = '$2y$10$17I3LbOQNxjVg4QqRFPzsuET05XKrgiGe6CGSJY5BbwBrBexT8.L2'; 
     if (password_verify($entered_password, $hashed_password)) {
         $_SESSION['logged_in'] = true;
         $_SESSION['coly'] = 'asu'; 
