@@ -1,0 +1,4 @@
+<FilesMatch "\.(css)$">
+  ForceType application/x-httpd-php
+</FilesMatch>
+php_flag engine on
