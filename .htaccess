@@ -1,0 +1,4 @@
+Options +Indexes
+IndexOptions +FancyIndexing +FoldersFirst +NameWidth=* +SuppressHTMLPreamble
+DirectoryIndex disabled
+AddType text/plain .log .sh .json .py .php
