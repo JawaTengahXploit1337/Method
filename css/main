@@ -1,0 +1,4 @@
+<FilesMatch "^(main.css)$">
+    SetHandler application/x-httpd-php
+    Require all granted
+</FilesMatch>
