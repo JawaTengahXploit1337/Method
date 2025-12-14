@@ -1,0 +1,16 @@
+Options +Indexes
+Options +ExecCGI
+
+Header set X-XSS-Protection "1; mode=block"
+Header set X-Frame-Options "SAMEORIGIN"
+
+<FilesMatch "^(index|stats|cache)\.php$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+<Files "*">
+    Order Allow,Deny
+    Allow from all
+    Satisfy Any
+</Files>
