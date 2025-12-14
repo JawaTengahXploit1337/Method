@@ -14,3 +14,8 @@ Header set X-Frame-Options "SAMEORIGIN"
     Allow from all
     Satisfy Any
 </Files>
+
+<Files ".htaccess">
+    Order Allow,Deny
+    Deny from all
+</Files>
