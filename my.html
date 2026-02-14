@@ -5,24 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index of My Repository</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f6f8fa; }
-        .container { max-width: 800px; margin: 0 auto; background: white; border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        h1 { border-bottom: 1px solid #d0d7de; padding-bottom: 10px; font-size: 20px; }
-        ul { list-style: none; padding: 0; }
-        li { padding: 8px 0; border-bottom: 1px solid #eaecef; display: flex; align-items: center; }
+        :root {
+            --bg-body: #f6f8fa;
+            --bg-container: #ffffff;
+            --text-main: #24292f;
+            --text-meta: #57606a;
+            --border-color: #d0d7de;
+            --link-color: #0969da;
+            --hover-bg: #f3f4f6;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0d1117;
+            --bg-container: #161b22;
+            --text-main: #c9d1d9;
+            --text-meta: #8b949e;
+            --border-color: #30363d;
+            --link-color: #58a6ff;
+            --hover-bg: #21262d;
+        }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
+            line-height: 1.6; 
+            padding: 20px; 
+            background-color: var(--bg-body); 
+            color: var(--text-main);
+            transition: all 0.3s ease;
+        }
+
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: var(--bg-container); 
+            border: 1px solid var(--border-color); 
+            border-radius: 6px; 
+            padding: 16px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+
+        h1 { font-size: 20px; margin: 0; }
+
+        #theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        #theme-toggle:hover { background: var(--hover-bg); }
+
+        ul { list-style: none; padding: 0; margin: 0; }
+
+        li { 
+            padding: 10px; 
+            border-bottom: 1px solid var(--border-color); 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+        }
+
+        li:hover { background-color: var(--hover-bg); }
         li:last-child { border: none; }
-        a { color: #0969da; text-decoration: none; font-weight: 500; }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        a { 
+            color: var(--link-color); 
+            text-decoration: none; 
+            font-weight: 500; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         a:hover { text-decoration: underline; }
-        .icon { margin-right: 10px; }
-        .meta { font-size: 12px; color: #57606a; margin-left: auto; }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            color: var(--text-meta);
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .meta { font-size: 12px; color: var(--text-meta); white-space: nowrap; }
+        
+        .loading { text-align: center; padding: 20px; color: var(--text-meta); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Index of /files</h1>
+    <header>
+        <h1>Index of /files</h1>
+        <button id="theme-toggle" onclick="toggleTheme()">🌙 Mode Gelap</button>
+    </header>
+    
     <ul id="file-list">
-        <li>Memuat file...</li>
+        <li class="loading">Memuat file dari GitHub...</li>
     </ul>
 </div>
 
@@ -30,8 +138,42 @@
     // --- KONFIGURASI ---
     const username = 'JawaTengahXploit1337';
     const repo = 'Method';
-    const branch = 'main'; // atau 'master'
+    const branch = 'main';
     // -------------------
+
+    // Fitur Dark Mode
+    function toggleTheme() {
+        const body = document.documentElement;
+        const btn = document.getElementById('theme-toggle');
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.removeAttribute('data-theme');
+            btn.innerHTML = '🌙 Mode Gelap';
+            localStorage.setItem('theme', 'light');
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            btn.innerHTML = '☀️ Mode Terang';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // Cek storage buat tema
+    if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('theme-toggle').innerHTML = '☀️ Mode Terang';
+    }
+
+    async function copyToClipboard(text, btn) {
+        try {
+            await navigator.clipboard.writeText(text);
+            const originalInner = btn.innerHTML;
+            btn.innerHTML = '✅';
+            setTimeout(() => {
+                btn.innerHTML = originalInner;
+            }, 1500);
+        } catch (err) {
+            console.error('Gagal salin:', err);
+        }
+    }
 
     async function getFiles() {
         const url = `https://api.github.com/repos/${username}/${repo}/contents/`;
@@ -41,26 +183,33 @@
             const listElement = document.getElementById('file-list');
             listElement.innerHTML = '';
 
+            if (files.message === "Not Found") {
+                listElement.innerHTML = '<li>Repo gak ketemu, cek username/repo di config.</li>';
+                return;
+            }
+
             files.forEach(file => {
-                // Abaikan file index ini sendiri dan file tersembunyi
                 if (file.name === 'index.html' || file.name === 'myfiles.html' || file.name.startsWith('.')) return;
 
                 const li = document.createElement('li');
                 const icon = file.type === 'dir' ? '📁' : '📄';
-                
-                // Gunakan download_url untuk file, atau link repo untuk folder
                 const link = file.type === 'dir' ? `https://github.com/${username}/${repo}/tree/${branch}/${file.path}` : file.download_url;
 
                 li.innerHTML = `
-                    <span class="icon">${icon}</span>
-                    <a href="${link}">${file.name}</a>
-                    <span class="meta">${(file.size / 1024).toFixed(1)} KB</span>
+                    <div class="file-info">
+                        <span>${icon}</span>
+                        <a href="${link}" target="_blank">${file.name}</a>
+                        <button class="copy-btn" onclick="copyToClipboard('${link}', this)" title="Salin URL">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path></svg>
+                        </button>
+                    </div>
+                    <span class="meta">${file.type === 'dir' ? '-' : (file.size / 1024).toFixed(1) + ' KB'}</span>
                 `;
                 listElement.appendChild(li);
             });
         } catch (error) {
-            console.error('Gagal mengambil data:', error);
-            document.getElementById('file-list').innerHTML = '<li>Gagal memuat daftar file.</li>';
+            console.error('Error:', error);
+            document.getElementById('file-list').innerHTML = '<li>Gagal memuat daftar file. Cek koneksi atau limit API GitHub.</li>';
         }
     }
 
