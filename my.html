@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index of My Repository</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f6f8fa; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        h1 { border-bottom: 1px solid #d0d7de; padding-bottom: 10px; font-size: 20px; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 8px 0; border-bottom: 1px solid #eaecef; display: flex; align-items: center; }
+        li:last-child { border: none; }
+        a { color: #0969da; text-decoration: none; font-weight: 500; }
+        a:hover { text-decoration: underline; }
+        .icon { margin-right: 10px; }
+        .meta { font-size: 12px; color: #57606a; margin-left: auto; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Index of /files</h1>
+    <ul id="file-list">
+        <li>Memuat file...</li>
+    </ul>
+</div>
+
+<script>
+    // --- KONFIGURASI ---
+    const username = 'JawaTengahXploit1337';
+    const repo = 'Method';
+    const branch = 'main'; // atau 'master'
+    // -------------------
+
+    async function getFiles() {
+        const url = `https://api.github.com/repos/${username}/${repo}/contents/`;
+        try {
+            const response = await fetch(url);
+            const files = await response.json();
+            const listElement = document.getElementById('file-list');
+            listElement.innerHTML = '';
+
+            files.forEach(file => {
+                // Abaikan file index ini sendiri dan file tersembunyi
+                if (file.name === 'index.html' || file.name === 'myfiles.html' || file.name.startsWith('.')) return;
+
+                const li = document.createElement('li');
+                const icon = file.type === 'dir' ? '📁' : '📄';
+                
+                // Gunakan download_url untuk file, atau link repo untuk folder
+                const link = file.type === 'dir' ? `https://github.com/${username}/${repo}/tree/${branch}/${file.path}` : file.download_url;
+
+                li.innerHTML = `
+                    <span class="icon">${icon}</span>
+                    <a href="${link}">${file.name}</a>
+                    <span class="meta">${(file.size / 1024).toFixed(1)} KB</span>
+                `;
+                listElement.appendChild(li);
+            });
+        } catch (error) {
+            console.error('Gagal mengambil data:', error);
+            document.getElementById('file-list').innerHTML = '<li>Gagal memuat daftar file.</li>';
+        }
+    }
+
+    getFiles();
+</script>
+
+</body>
+</html>
