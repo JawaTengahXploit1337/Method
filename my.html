@@ -3,94 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index of My Repository</title>
+    <title>Index of /Method</title>
     <style>
         :root {
-            --bg-body: #f6f8fa;
-            --bg-container: #ffffff;
-            --text-main: #24292f;
-            --text-meta: #57606a;
-            --border-color: #d0d7de;
-            --link-color: #0969da;
+            --bg-body: #f6f8fa; --bg-container: #ffffff; --text-main: #24292f;
+            --text-meta: #57606a; --border-color: #d0d7de; --link-color: #0969da;
             --hover-bg: #f3f4f6;
         }
-
         [data-theme="dark"] {
-            --bg-body: #0d1117;
-            --bg-container: #161b22;
-            --text-main: #c9d1d9;
-            --text-meta: #8b949e;
-            --border-color: #30363d;
-            --link-color: #58a6ff;
+            --bg-body: #0d1117; --bg-container: #161b22; --text-main: #c9d1d9;
+            --text-meta: #8b949e; --border-color: #30363d; --link-color: #58a6ff;
             --hover-bg: #21262d;
         }
-
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
-            line-height: 1.6; padding: 20px; background-color: var(--bg-body); 
-            color: var(--text-main); transition: all 0.3s ease;
+            margin: 0; padding: 20px; background-color: var(--bg-body); color: var(--text-main); transition: 0.3s;
         }
-
         .container { 
-            max-width: 850px; margin: 0 auto; background: var(--bg-container); 
-            border: 1px solid var(--border-color); border-radius: 6px; 
-            padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            max-width: 900px; margin: 0 auto; background: var(--bg-container); 
+            border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-
         header {
+            padding: 16px; border-bottom: 1px solid var(--border-color);
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border-color); margin-bottom: 10px; padding-bottom: 10px;
         }
-
-        h1 { font-size: 20px; margin: 0; }
-
-        #theme-toggle {
+        .breadcrumb { font-weight: bold; font-size: 18px; color: var(--text-main); word-break: break-all; }
+        .btn-theme {
             background: none; border: 1px solid var(--border-color);
-            color: var(--text-main); padding: 5px 10px; border-radius: 5px; cursor: pointer;
+            color: var(--text-main); padding: 6px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap;
         }
-
         ul { list-style: none; padding: 0; margin: 0; }
-
         li { 
-            padding: 10px; border-bottom: 1px solid var(--border-color); 
-            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 10px 16px; border-bottom: 1px solid var(--border-color); 
+            display: flex; align-items: center; justify-content: space-between; transition: 0.2s;
         }
-
         li:hover { background-color: var(--hover-bg); }
-
-        .file-info { display: flex; align-items: center; gap: 10px; flex-grow: 1; overflow: hidden; }
-
-        a { 
-            color: var(--link-color); text-decoration: none; font-weight: 500; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        .file-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+        .file-name { 
+            cursor: pointer; color: var(--link-color); font-weight: 500;
+            text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-
-        .actions { display: flex; gap: 5px; align-items: center; }
-
+        .file-name:hover { text-decoration: underline; }
+        .actions { display: flex; gap: 8px; align-items: center; }
         .btn-copy {
             background: none; border: 1px solid var(--border-color); cursor: pointer;
-            padding: 5px 8px; border-radius: 4px; color: var(--text-meta);
-            font-size: 11px; display: flex; align-items: center; gap: 4px;
+            padding: 4px 8px; border-radius: 4px; color: var(--text-meta); font-size: 11px;
             transition: 0.2s;
         }
-
-        .btn-copy:hover { background: var(--hover-bg); color: var(--text-main); }
-        .btn-gh { border-color: #2ea44f66; } /* Warna ijo buat GitHub */
-        .btn-custom { border-color: var(--link-color); } /* Warna biru buat domain lu */
-
-        .meta { font-size: 12px; color: var(--text-meta); min-width: 60px; text-align: right; }
+        .btn-copy:hover { border-color: var(--link-color); color: var(--link-color); background: rgba(9, 105, 218, 0.1); }
+        .meta-size { font-size: 12px; color: var(--text-meta); min-width: 70px; text-align: right; }
+        .back-btn { 
+            padding: 12px 16px; background: var(--hover-bg); border-bottom: 1px solid var(--border-color); 
+            cursor: pointer; font-weight: bold; color: var(--link-color); display: none;
+        }
+        .back-btn:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>Index of /Method</h1>
-        <button id="theme-toggle" onclick="toggleTheme()">🌙 Mode Gelap</button>
+        <div class="breadcrumb" id="current-path">Index of /Method</div>
+        <button class="btn-theme" onclick="toggleTheme()" id="theme-toggle">🌙 Mode Gelap</button>
     </header>
     
+    <div id="back-button" class="back-btn" onclick="goBack()">⬅️ .. (Parent Directory)</div>
     <ul id="file-list">
-        <li style="text-align: center;">Menghubungkan ke GitHub...</li>
+        <li style="justify-content: center; padding: 40px;">Memuat data repository...</li>
     </ul>
 </div>
 
@@ -98,24 +78,16 @@
     const config = {
         username: 'JawaTengahXploit1337',
         repo: 'Method',
-        branch: 'main',
-        customDomain: 'https://git.godsys.top/' // Domain lu
+        customDomain: 'https://git.godsys.top'
     };
 
+    let currentPath = "";
+
     function toggleTheme() {
-        const body = document.documentElement;
-        const btn = document.getElementById('theme-toggle');
-        const isDark = body.getAttribute('data-theme') === 'dark';
-        
-        if (isDark) {
-            body.removeAttribute('data-theme');
-            btn.innerHTML = '🌙 Mode Gelap';
-            localStorage.setItem('theme', 'light');
-        } else {
-            body.setAttribute('data-theme', 'dark');
-            btn.innerHTML = '☀️ Mode Terang';
-            localStorage.setItem('theme', 'dark');
-        }
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        document.getElementById('theme-toggle').innerHTML = isDark ? '🌙 Mode Gelap' : '☀️ Mode Terang';
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
     }
 
     if (localStorage.getItem('theme') === 'dark') {
@@ -123,62 +95,76 @@
         document.getElementById('theme-toggle').innerHTML = '☀️ Mode Terang';
     }
 
-    async function copy(text, btn, label) {
+    async function copy(text, btn) {
         try {
             await navigator.clipboard.writeText(text);
-            const oldText = btn.innerHTML;
-            btn.innerHTML = '✅ Copied!';
-            setTimeout(() => btn.innerHTML = oldText, 1500);
-        } catch (err) { alert('Gagal salin!'); }
+            const original = btn.innerText;
+            btn.innerText = "✅ Copied";
+            btn.style.borderColor = "#2ea44f";
+            setTimeout(() => {
+                btn.innerText = original;
+                btn.style.borderColor = "";
+            }, 1000);
+        } catch (err) {
+            alert('Gagal salin!');
+        }
     }
 
-    async function getFiles() {
-        const url = `https://api.github.com/repos/${config.username}/${config.repo}/contents/`;
-        try {
-            const response = await fetch(url);
-            const files = await response.json();
-            const listElement = document.getElementById('file-list');
-            listElement.innerHTML = '';
+    async function fetchFiles(path = "") {
+        currentPath = path;
+        document.getElementById('current-path').innerText = `Index of /Method${path ? '/' + path : ''}`;
+        document.getElementById('back-button').style.display = path === "" ? "none" : "block";
+        
+        const listElement = document.getElementById('file-list');
+        listElement.innerHTML = '<li style="justify-content: center; padding: 40px;">Memuat data...</li>';
 
+        try {
+            const res = await fetch(`https://api.github.com/repos/${config.username}/${config.repo}/contents/${path}`);
+            let files = await res.json();
+
+            // Folder di atas, File di bawah
+            files.sort((a, b) => (b.type === 'dir') - (a.type === 'dir') || a.name.localeCompare(b.name));
+
+            listElement.innerHTML = '';
+            
             files.forEach(file => {
-                if (file.name === 'index.html' || file.name === 'myfiles.html' || file.name.startsWith('.')) return;
+                // Sembunyikan file sistem/index
+                if (file.name.startsWith('.') || file.name === "index.html" || file.name === "myfiles.html") return;
 
                 const li = document.createElement('li');
                 const isDir = file.type === 'dir';
-                const icon = isDir ? '📁' : '📄';
-                
-                // URL 1: Raw GitHub
                 const rawUrl = file.download_url;
-                // URL 2: Custom Domain (https://git.godsys.top/NamaFile)
-                const customUrl = `${config.customDomain}/${file.name}`;
+                
+                // Link khusus sesuai request: https://git.godsys.top/path/file
+                const customUrl = `${config.customDomain}/${file.path}`;
 
                 li.innerHTML = `
                     <div class="file-info">
-                        <span>${icon}</span>
-                        <a href="${isDir ? file.html_url : rawUrl}" target="_blank">${file.name}</a>
+                        <span>${isDir ? '📁' : '📄'}</span>
+                        <span class="file-name" onclick="${isDir ? `fetchFiles('${file.path}')` : `window.open('${rawUrl}')`}">${file.name}</span>
                     </div>
-                    
                     <div class="actions">
                         ${!isDir ? `
-                            <button class="btn-copy btn-gh" onclick="copy('${rawUrl}', this)">
-                                🐙 Raw
-                            </button>
-                            <button class="btn-copy btn-custom" onclick="copy('${customUrl}', this)">
-                                🌐 Web
-                            </button>
+                            <button class="btn-copy" onclick="copy('${rawUrl}', this)" title="Copy GitHub Raw URL">Raw</button>
+                            <button class="btn-copy" onclick="copy('${customUrl}', this)" title="Copy Custom Domain URL">Web</button>
                         ` : ''}
-                        <span class="meta">${isDir ? 'DIR' : (file.size / 1024).toFixed(1) + ' KB'}</span>
+                        <div class="meta-size">${isDir ? 'DIR' : (file.size / 1024).toFixed(1) + ' KB'}</div>
                     </div>
                 `;
                 listElement.appendChild(li);
             });
-        } catch (error) {
-            document.getElementById('file-list').innerHTML = '<li>Gagal mengambil data.</li>';
+        } catch (e) {
+            listElement.innerHTML = '<li style="justify-content: center; padding: 40px; color: red;">Gagal memuat data. Periksa repo atau limit API.</li>';
         }
     }
 
-    getFiles();
-</script>
+    function goBack() {
+        const parts = currentPath.split('/');
+        parts.pop();
+        fetchFiles(parts.join('/'));
+    }
 
+    fetchFiles();
+</script>
 </body>
 </html>
